@@ -5,9 +5,9 @@ class UsersController < ApplicationController
     # REGISTER
     def register
 
-        # @user = User.where(email: params[:email])
+        @user = User.where(email: params[:email])
 
-        # if @user
+        if @user
             @user = User.create(user_params)
 
             if @user.valid?
@@ -15,14 +15,14 @@ class UsersController < ApplicationController
                 token = encode_token(payload)
                 subject = "Registration"
                 body = "Signup successful!! Now you can create your TO-DO List"
-                ApplicationMailer.send_email(@user, subject, body).deliver_now
+                ApplicationMailer.send_email(@user,subject,body).deliver_now
                 render json: { success: true, message: "Registered successfully", user: @user, token: token }, status: 201
             else
                 render json: { success: false, message: "Registration not successful" }, status: 400
             end
-        # else
-        #     render json: { success: false, message: "User already exist"}, status: 400
-        # end
+        else
+            render json: { success: false, message: "User already exist"}, status: 400
+        end
     end
 
     # LOGGING IN
