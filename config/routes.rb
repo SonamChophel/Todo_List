@@ -7,10 +7,10 @@ Rails.application.routes.draw do
   post "/register", to: "users#register"
   post "/login", to: "users#login"
   get "/auto_login", to: "users#auto_login"
+  delete "/logout", to: "users#logout"
   get "/users/:id", to: "users#show"
   patch "/users/:id", to: "users#update"
   delete "/users/:id", to: "users#destroy"
-  delete "/logout", to: "users#logout"
 
 
   #list routes

@@ -14,8 +14,8 @@ class PasswordsController < ApplicationController
 
         # send token in email
         subject = "Token"
-        body = "This is your TOKEN to reset your password #{token} use it before it expires"
-        ApplicationMailer.send_email(user, subject, body).deliver_now
+        body = "To reset your password, use TOKEN: #{token} before it expires"
+        ApplicationMailer.welcome_email(user, subject, body).deliver_now
             render json: { success: true, message: "OTP has been sent to your registered email" }, status: 200
         else
             render json: { success: false, error: "Email address not found. Please check and try again." }, status: 404

@@ -1,13 +1,15 @@
 class UsersController < ApplicationController
 
-    before_action :authorized, only: [:auto_login, :show, :update, :destroy]
+    before_action :authorized, only: [:auto_login, :show, :update, :destroy, :logout]
+    before_action :find_user, only: [:show,:update, :destroy]
+
 
     # REGISTER
     def register
 
-        @user = User.where(email: params[:email])
+        @user = User.find_by(email: params[:email])
 
-        if @user
+        if !@user
             @user = User.create(user_params)
 
             if @user.valid?
@@ -15,7 +17,7 @@ class UsersController < ApplicationController
                 token = encode_token(payload)
                 subject = "Registration"
                 body = "Signup successful!! Now you can create your TO-DO List"
-                ApplicationMailer.send_email(@user,subject,body).deliver_now
+                ApplicationMailer.welcome_email(@user,subject,body).deliver_now
                 render json: { success: true, message: "Registered successfully", user: @user, token: token }, status: 201
             else
                 render json: { success: false, message: "Registration not successful" }, status: 400
@@ -46,6 +48,17 @@ class UsersController < ApplicationController
         render json: {success: true, user: @user}, status: 200
     end
 
+    #LOGOUT
+    def logout
+        @user = User.find_by(email: params[:email])
+        if @user
+            @user.authentication_token = nil
+            @user.save
+            render json: { message: "Logged out successfully"}, status: 200
+        else
+            render json: { error: "Not successful"}, status: 400
+        end
+    end
 
     def show_all
         @users = User.all
@@ -57,13 +70,10 @@ class UsersController < ApplicationController
     end
 
     def show
-        @user = User.find(params[:id])
-        
         render json: { success: true, message: "User Detail", user: @user }, status: 200
     end
 
     def update
-        @user = User.find(params[:id])
         if @user
             @user.update(user_params)
             render json: { success: true, message: "User updated successfully", user: @user}, status: 200
@@ -74,7 +84,6 @@ class UsersController < ApplicationController
 
     def destroy
         if role
-            @user = User.find(params[:id])
             if @user
                 @user.destroy
                 render json: { success: true, message: "User deleted successfully"}, status: 200
@@ -86,21 +95,14 @@ class UsersController < ApplicationController
         end
     end
 
-    def logout
-        @user = User.find_by(email: params[:email])
-        if @user
-            user.authentication_token = nil
-            user.save
-            render json: { message: "Logged out successfully"}, status: 200
-        else
-            render json: { error: "Not successful"}, status: 400
-        end
-    end
-
     private
 
     def user_params
         params.permit(:email, :username, :password, :role)
+    end
+
+    def find_user
+            @user = User.find(params[:id])
     end
 
 end
