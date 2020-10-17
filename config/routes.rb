@@ -26,5 +26,5 @@ Rails.application.routes.draw do
   #password routes
   post "/passwords/forgot", to: "passwords#forgot"
   post "/passwords/reset", to: "passwords#reset"
-  patch "/passwords/update", to: "passwords#update"
+  # patch "/passwords/update", to: "passwords#update"
 end

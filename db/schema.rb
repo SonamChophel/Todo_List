@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_16_082742) do
+ActiveRecord::Schema.define(version: 2020_10_17_060115) do
 
   create_table "lists", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -29,6 +29,8 @@ ActiveRecord::Schema.define(version: 2020_10_16_082742) do
     t.boolean "role"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
   end
 
   add_foreign_key "lists", "users"
